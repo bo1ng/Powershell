@@ -1,3 +1,3 @@
 $name = $(Get-WmiObject Win32_Computersystem).name
-netdom renamecomputer $name /newname:SVK-GATE /userD:administrator /passwordd:Qaz123!@#wsx /reboot:10
-Write-Host "Компьютер будет перезагружен..."
+netdom renamecomputer $name /newname:SVK-GATE /userD:administrator /passwordd:password /reboot:10
+Write-Host "ГЉГ®Г¬ГЇГјГѕГІГҐГ° ГЎГіГ¤ГҐГІ ГЇГҐГ°ГҐГ§Г ГЈГ°ГіГ¦ГҐГ­..."

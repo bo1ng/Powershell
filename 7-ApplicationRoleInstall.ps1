@@ -1,18 +1,18 @@
 $defpath = Get-Content Path.txt
 
-#Установка ролей
-Write-Host "Установка ролей" -foregroundcolor "DarkCyan"
+#Г“Г±ГІГ Г­Г®ГўГЄГ  Г°Г®Г«ГҐГ©
+Write-Host "Г“Г±ГІГ Г­Г®ГўГЄГ  Г°Г®Г«ГҐГ©" -foregroundcolor "DarkCyan"
 Import-Module ServerManager
 Add-WindowsFeature AS-NET-Framework, AS-Ent-Services, AS-TCP-Port-Sharing, AS-Incoming-Trans, AS-Outgoing-Trans, AS-WS-Atomic
 Write-Host "`n`n`n`n`n`n`n`n"
 
-Write-Host "Далее запустится оснастка, в которой нужно создать COM+ приложение.`nВыбрать This User и пользователя MqsAgentUser. Остальные параметры оставить по умолчанию." -ForegroundColor "DarkYellow"
+Write-Host "Г„Г Г«ГҐГҐ Г§Г ГЇГіГ±ГІГЁГІГ±Гї Г®Г±Г­Г Г±ГІГЄГ , Гў ГЄГ®ГІГ®Г°Г®Г© Г­ГіГ¦Г­Г® Г±Г®Г§Г¤Г ГІГј COM+ ГЇГ°ГЁГ«Г®Г¦ГҐГ­ГЁГҐ.`nГ‚Г»ГЎГ°Г ГІГј This User ГЁ ГЇГ®Г«ГјГ§Г®ГўГ ГІГҐГ«Гї MqsAgentUser. ГЋГ±ГІГ Г«ГјГ­Г»ГҐ ГЇГ Г°Г Г¬ГҐГІГ°Г» Г®Г±ГІГ ГўГЁГІГј ГЇГ® ГіГ¬Г®Г«Г·Г Г­ГЁГѕ." -ForegroundColor "DarkYellow"
 Start-Process -FilePath "C:\Program Files (x86)\Microsoft BizTalk Server 2010\MQSConfigWiz.exe"
-Write-Host "После завершения настройки нажмите любую клавишу..." -ForegroundColor "DarkYellow"
+Write-Host "ГЏГ®Г±Г«ГҐ Г§Г ГўГҐГ°ГёГҐГ­ГЁГї Г­Г Г±ГІГ°Г®Г©ГЄГЁ Г­Г Г¦Г¬ГЁГІГҐ Г«ГѕГЎГіГѕ ГЄГ«Г ГўГЁГёГі..." -ForegroundColor "DarkYellow"
 $x=$host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
 
 
-Write-Host "Настройка COM+ приложения MQSAgent2" -foregroundcolor "DarkCyan"
+Write-Host "ГЌГ Г±ГІГ°Г®Г©ГЄГ  COM+ ГЇГ°ГЁГ«Г®Г¦ГҐГ­ГЁГї MQSAgent2" -foregroundcolor "DarkCyan"
 $comAdmin = New-Object -comobject COMAdmin.COMAdminCatalog
 $comAdmin.ShutdownApplication("MqsAgent2")
 $applications = $comAdmin.GetCollection("Applications") 
@@ -30,7 +30,7 @@ $applications.SaveChanges() | Out-Null
 
 $comAdmin.StartApplication("MQSAgent2")
 
-$comAdmin.CreateServiceForApplication("MqsAgent2","MqsAgent2","SERVICE_AUTO_START","SERVICE_ERROR_CRITICAL","",".\MqsAgentUser","Qaz123!@#wsx",$False)
+$comAdmin.CreateServiceForApplication("MqsAgent2","MqsAgent2","SERVICE_AUTO_START","SERVICE_ERROR_CRITICAL","",".\MqsAgentUser","password",$False)
 
 $comAdmin.ShutdownApplication("MqsAgent2")
 $applications = $comAdmin.GetCollection("Applications") 
@@ -42,7 +42,7 @@ foreach ($application in $applications)
     {
         $application.Value("Activation") = "1"
         $application.Value("Identity") = ".\MqsAgentUser"
-        $application.Value("Password") = "Qaz123!@#wsx"
+        $application.Value("Password") = "password"
     }
 }
 
@@ -53,13 +53,13 @@ powershell.exe "$defpath\Misc\AddAccountToLogonAsService.ps1" "SVK-GATE\MqsAgent
 
 Start-Service MqsAgent2
 
-Write-Host "Настройка параметров MSDTC" -ForegroundColor "DarkCyan"
+Write-Host "ГЌГ Г±ГІГ°Г®Г©ГЄГ  ГЇГ Г°Г Г¬ГҐГІГ°Г®Гў MSDTC" -ForegroundColor "DarkCyan"
 Set-ItemProperty -path HKLM:\Software\Microsoft\MSDTC\Security -name XaTransactions -Value 1
 Set-ItemProperty -path HKLM:\Software\Microsoft\MSDTC\Security -name NetworkDtcAccessClients -Value 1
 Set-ItemProperty -path HKLM:\Software\Microsoft\MSDTC -name AllowOnlySecureRpcCalls -Value 0
 Set-ItemProperty -path HKLM:\Software\Microsoft\MSDTC -name TurnOffRpcSecurity -Value 1
 Set-ItemProperty -path HKLM:\Software\Microsoft\MSDTC -name FallbackToUnsecureRPCIfNecessary -Value 0
 
-Write-Host "Необходимо вручную добавить пользователя WmqHostUser в роль CreatorOwner для приложения MQSAgent2 в оснастке Component Services`nа также настроить LocalDTC параметр Capacity Log = 512 MB" -ForegroundColor "DarkYellow"
-Write-Host "Нажмите любую клавишу для продолжения..."
+Write-Host "ГЌГҐГ®ГЎГµГ®Г¤ГЁГ¬Г® ГўГ°ГіГ·Г­ГіГѕ Г¤Г®ГЎГ ГўГЁГІГј ГЇГ®Г«ГјГ§Г®ГўГ ГІГҐГ«Гї WmqHostUser Гў Г°Г®Г«Гј CreatorOwner Г¤Г«Гї ГЇГ°ГЁГ«Г®Г¦ГҐГ­ГЁГї MQSAgent2 Гў Г®Г±Г­Г Г±ГІГЄГҐ Component Services`nГ  ГІГ ГЄГ¦ГҐ Г­Г Г±ГІГ°Г®ГЁГІГј LocalDTC ГЇГ Г°Г Г¬ГҐГІГ° Capacity Log = 512 MB" -ForegroundColor "DarkYellow"
+Write-Host "ГЌГ Г¦Г¬ГЁГІГҐ Г«ГѕГЎГіГѕ ГЄГ«Г ГўГЁГёГі Г¤Г«Гї ГЇГ°Г®Г¤Г®Г«Г¦ГҐГ­ГЁГї..."
 $x=$host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")

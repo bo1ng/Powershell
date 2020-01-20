@@ -1,16 +1,16 @@
-do {$path = Read-Host "Введите путь до setup.exe дистрибутива SQL Server 2008 R2 (Например D:\)"
+do {$path = Read-Host "Г‚ГўГҐГ¤ГЁГІГҐ ГЇГіГІГј Г¤Г® setup.exe Г¤ГЁГ±ГІГ°ГЁГЎГіГІГЁГўГ  SQL Server 2008 R2 (ГЌГ ГЇГ°ГЁГ¬ГҐГ° D:\)"
     if ((Test-Path "$path\setup.exe") -match "false")
         {
-        Write-host "В директории $path отсутствует установочный файл setup.exe" -ForegroundColor "red"
+        Write-host "Г‚ Г¤ГЁГ°ГҐГЄГІГ®Г°ГЁГЁ $path Г®ГІГ±ГіГІГ±ГІГўГіГҐГІ ГіГ±ГІГ Г­Г®ГўГ®Г·Г­Г»Г© ГґГ Г©Г« setup.exe" -ForegroundColor "red"
         }
     }
 until ((Test-Path "$path\setup.exe") -match "true")
 $defpath = Get-Content Path.txt
-Write-Host "Установка SQL Server 2008 R2" -Foregroundcolor "DarkCyan"
-Start-Process -Filepath "$path\setup.exe" -ArgumentList "/Q /ACTION=install /IACCEPTSQLSERVERLICENSETERMS /SAPWD=Qaz123!@#wsx /CONFIGURATIONFILE=$defpath\SQL\configurationfile.ini /INDICATEPROGRESS" -Wait
-Write-Host "Установка SP3" -Foregroundcolor "DarkCyan"
+Write-Host "Г“Г±ГІГ Г­Г®ГўГЄГ  SQL Server 2008 R2" -Foregroundcolor "DarkCyan"
+Start-Process -Filepath "$path\setup.exe" -ArgumentList "/Q /ACTION=install /IACCEPTSQLSERVERLICENSETERMS /SAPWD=password /CONFIGURATIONFILE=$defpath\SQL\configurationfile.ini /INDICATEPROGRESS" -Wait
+Write-Host "Г“Г±ГІГ Г­Г®ГўГЄГ  SP3" -Foregroundcolor "DarkCyan"
 Start-Process -Filepath "$defpath\SQL\SQLServer2008R2SP3-KB2979597-x64-ENU.exe" -ArgumentList "/QS /ALLINSTANCES /ACTION=Patch /IACCEPTSQLSERVERLICENSETERMS /INDICATEPROGRESS" -Wait
-#Write-Host "Установка обновлений" -Foregroundcolor "DarkCyan"
+#Write-Host "Г“Г±ГІГ Г­Г®ГўГЄГ  Г®ГЎГ­Г®ГўГ«ГҐГ­ГЁГ©" -Foregroundcolor "DarkCyan"
 #Start-Process -Filepath "$defpath\SQL\SQLServer2008R2-KB2754552-x64.exe" -ArgumentList "/Q /ACTION=Patch /IACCEPTSQLSERVERLICENSETERMS /instancename=SVK-GATE /INDICATEPROGRESS" -Wait
-Write-Host "Установка завершена.Для продолжения нажмите любую клавишу..."
+Write-Host "Г“Г±ГІГ Г­Г®ГўГЄГ  Г§Г ГўГҐГ°ГёГҐГ­Г .Г„Г«Гї ГЇГ°Г®Г¤Г®Г«Г¦ГҐГ­ГЁГї Г­Г Г¦Г¬ГЁГІГҐ Г«ГѕГЎГіГѕ ГЄГ«Г ГўГЁГёГі..."
 $x=$host.UI.RawUI.ReadKey("NoEcho, IncludeKeyDown")
